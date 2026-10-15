@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laboratorio Evaluativo - Arquitectura de Computadoras</title>
+  <meta name="description" content="Cuestionario interactivo avanzado de Arquitectura de Computadoras: Jerarquía de Memoria, Rendimiento, Caché y Memoria Virtual con 40 preguntas de estudio y explicaciones detalladas.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            heading: ['"Outfit"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eef6ff',
+              100: '#d9eaff',
+              200: '#bcd9ff',
+              300: '#8ec2ff',
+              400: '#599eff',
+              500: '#3277fc',
+              600: '#1d57f0',
+              700: '#1541dd',
+              800: '#1736b3',
+              900: '#18318d',
+              950: '#131e56',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Canvas Confetti for completion -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    h1, h2, h3, h4, .font-heading {
+      font-family: 'Outfit', sans-serif;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(148, 163, 184, 0.1);
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.4);
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.6);
+    }
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.02); }
+    }
+    .animate-pulse-subtle {
+      animation: pulse-subtle 2s infinite ease-in-out;
+    }
+    .glow-effect {
+      box-shadow: 0 0 25px -5px rgba(50, 119, 252, 0.3);
+    }
+    .dark .glow-effect {
+      box-shadow: 0 0 35px -5px rgba(59, 130, 246, 0.25);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-300 flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+
+  <!-- Floating Background Ambient Gradients -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+    <div class="absolute -top-40 -right-40 w-96 h-96 bg-brand-400/10 dark:bg-brand-600/10 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/2 -left-40 w-96 h-96 bg-indigo-500/10 dark:bg-purple-600/10 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-40 right-1/4 w-96 h-96 bg-emerald-400/10 dark:bg-cyan-600/10 rounded-full blur-3xl"></div>
+  </div>
+
+  <!-- Top Nav Bar -->
+  <header class="w-full sticky top-0 z-40 backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border-b border-slate-200/80 dark:border-slate-800/80 transition-colors">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+      
+      <!-- Brand & Title -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+          </svg>
+        </div>
+        <div>
+          <span class="text-xs font-bold tracking-wider uppercase text-brand-600 dark:text-brand-400">Arqui-Quiz</span>
+          <h1 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-tight">Arquitectura de Computadoras</h1>
+        </div>
+      </div>
+
+      <!-- Controls Right -->
+      <div class="flex items-center gap-2">
+        <!-- Question Grid Map Button -->
+        <button id="open-map-btn" onclick="toggleMapModal(true)" title="Mapa de preguntas" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1.5 text-xs font-semibold">
+          <svg class="w-5 h-5 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+          </svg>
+          <span class="hidden sm:inline">Índice</span>
+        </button>
+
+        <!-- Sound FX Toggle -->
+        <button id="sound-btn" onclick="toggleSound()" title="Efectos de sonido" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <svg id="sound-icon-on" class="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+          </svg>
+          <svg id="sound-icon-off" class="w-5 h-5 text-slate-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+          </svg>
+        </button>
+
+        <!-- Dark Mode Toggle -->
+        <button id="theme-btn" onclick="toggleTheme()" title="Cambiar tema" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <svg id="sun-icon" class="w-5 h-5 text-amber-500 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <svg id="moon-icon" class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-4xl w-full mx-auto px-4 py-6 sm:py-8 flex-1">
+
+    <!-- Hero Card Header -->
+    <section class="bg-white dark:bg-slate-900 p-6 sm:p-7 rounded-3xl shadow-sm border border-slate-200/90 dark:border-slate-800 mb-6 transition-all">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 bg-brand-50 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300 text-xs font-semibold rounded-full border border-brand-200/60 dark:border-brand-800/60 mb-2">
+            <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+            Laboratorio de Repaso Evaluativo
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            Banco de 40 Preguntas Clave
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+            Jerarquía de Memoria • Rendimiento CPU • Latencias & Métricas • Caché L1-L3 • Memoria Virtual
+          </p>
+        </div>
+
+        <!-- Filter & Shuffle Options Button group -->
+        <div class="flex flex-wrap items-center gap-2">
+          <!-- Category Filter -->
+          <div class="relative">
+            <select id="category-filter" onchange="filterByCategory(this.value)" class="text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 py-2 pl-3 pr-8 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 cursor-pointer">
+              <option value="ALL">Todos los temas (40)</option>
+              <option value="Jerarquía de Memoria">Jerarquía de Memoria (10)</option>
+              <option value="Rendimiento de Memoria">Rendimiento de Memoria (7)</option>
+              <option value="Medición y Rendimiento">Medición y Rendimiento (11)</option>
+              <option value="Memoria Caché">Memoria Caché (6)</option>
+              <option value="Memoria Virtual">Memoria Virtual (2)</option>
+              <option value="Memoria Caché vs Virtual">Memoria Caché vs Virtual (3)</option>
+              <option value="Conceptos Globales">Conceptos Globales (1)</option>
+            </select>
+          </div>
+
+          <!-- Shuffle Options Toggle -->
+          <button id="shuffle-toggle-btn" onclick="toggleOptionShuffle()" title="Alternar barajado de opciones" class="text-xs font-medium px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+            </svg>
+            <span id="shuffle-status-text">Opciones: Aleatorias</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Progress & Score Stats -->
+      <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80">
+        <div class="flex flex-wrap items-center justify-between text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2 gap-2">
+          <div class="flex items-center gap-2">
+            <span id="progress-text" class="text-slate-700 dark:text-slate-200">Pregunta 1 de 40</span>
+            <span id="active-filter-badge" class="hidden px-2 py-0.5 text-[10px] font-bold bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 rounded-md">Filtro activo</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span id="score-live" class="text-brand-600 dark:text-brand-400">Puntaje: 0 / 0 respondidas</span>
+            <span id="accuracy-live" class="text-slate-400 text-[11px]">(0% acierto)</span>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-200/60 dark:border-slate-700/60">
+          <div id="progress-bar" class="bg-gradient-to-r from-brand-600 to-indigo-500 h-full rounded-full transition-all duration-500 ease-out shadow-sm" style="width: 2.5%"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quiz Question Card Container -->
+    <div id="quiz-container" class="bg-white dark:bg-slate-900 p-6 sm:p-9 rounded-3xl shadow-sm border border-slate-200/90 dark:border-slate-800 transition-all glow-effect">
+      
+      <!-- Top meta info -->
+      <div class="flex items-center justify-between gap-3 mb-5">
+        <span id="category-badge" class="text-xs font-bold px-3 py-1 bg-brand-50 dark:bg-brand-950 text-brand-700 dark:text-brand-300 rounded-xl border border-brand-200/50 dark:border-brand-800/50 uppercase tracking-wide">
+          Jerarquía de Memoria
+        </span>
+        <div class="flex items-center gap-2">
+          <span id="status-pill" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">
+            Pendiente
+          </span>
+          <span id="question-index" class="text-xs text-slate-400 font-extrabold tracking-wider">#1 / 40</span>
+        </div>
+      </div>
+
+      <!-- Question Text -->
+      <h3 id="question-text" class="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white mb-6 leading-relaxed">
+        Cargando pregunta...
+      </h3>
+
+      <!-- Options Grid -->
+      <div id="options-grid" class="grid grid-cols-1 gap-3.5 mb-6" role="radiogroup">
+        <!-- Rendered via JS -->
+      </div>
+
+      <!-- Feedback Explanation Box -->
+      <div id="feedback-box" class="hidden p-5 rounded-2xl mb-6 text-sm border transition-all animate-fadeIn" role="region" aria-live="polite">
+        <div class="flex items-start gap-3">
+          <div id="feedback-icon" class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-base mt-0.5 shadow-sm">
+            ✓
+          </div>
+          <div class="flex-1">
+            <h4 id="feedback-title" class="font-extrabold text-base mb-1 tracking-tight"></h4>
+            <p id="feedback-msg" class="leading-relaxed text-sm opacity-95"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Navigation Buttons -->
+      <div class="flex flex-col sm:flex-row justify-between items-center gap-3 pt-5 border-t border-slate-100 dark:border-slate-800/80">
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <button id="prev-btn" onclick="prevQuestion()" class="flex-1 sm:flex-none px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Anterior
+          </button>
+          
+          <button id="reset-current-btn" onclick="clearCurrentAnswer()" title="Limpiar respuesta de esta pregunta" class="px-3 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 font-semibold rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            <span class="hidden md:inline">Reintentar</span>
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <!-- Quick hint indicator -->
+          <span class="hidden sm:inline text-[11px] text-slate-400 font-medium mr-2">Teclas [1-4] o [A-D]</span>
+          
+          <button id="next-btn" onclick="nextQuestion()" class="w-full sm:w-auto px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-xs sm:text-sm transition-all shadow-md shadow-brand-500/25 flex items-center justify-center gap-2 cursor-pointer">
+            <span>Siguiente</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Final Results Box (Hidden by default) -->
+    <section id="results-card" class="hidden bg-white dark:bg-slate-900 p-8 sm:p-10 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 text-center transition-all glow-effect animate-fadeIn">
+      
+      <!-- Trophy Icon -->
+      <div id="results-icon-container" class="w-20 h-20 bg-gradient-to-tr from-brand-600 to-indigo-500 text-white flex items-center justify-center rounded-3xl mx-auto mb-5 text-3xl shadow-lg shadow-brand-500/30">
+        🏆
+      </div>
+      
+      <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mb-2">
+        ¡Evaluación Completada!
+      </h2>
+      <p id="results-summary-text" class="text-slate-600 dark:text-slate-300 text-sm sm:text-base max-w-lg mx-auto mb-8">
+        Has completado el repaso evaluativo de Arquitectura de Computadoras. Aquí está el desglose de tu desempeño:
+      </p>
+
+      <!-- Score Card Dashboard -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto mb-8">
+        <div class="bg-slate-50 dark:bg-slate-800/60 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/80">
+          <div class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Aciertos</div>
+          <div id="final-score" class="text-3xl font-extrabold text-brand-600 dark:text-brand-400">0 / 40</div>
+          <div id="final-percent" class="text-xs font-semibold text-slate-500 mt-1">0% efectividad</div>
+        </div>
+
+        <div class="bg-slate-50 dark:bg-slate-800/60 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/80">
+          <div class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Errores</div>
+          <div id="final-errors" class="text-3xl font-extrabold text-rose-500">0</div>
+          <div class="text-xs font-semibold text-slate-500 mt-1">Preguntas a reforzar</div>
+        </div>
+
+        <div class="bg-slate-50 dark:bg-slate-800/60 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/80">
+          <div class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Veredicto</div>
+          <div id="final-status" class="text-2xl font-extrabold text-emerald-500">Excelente</div>
+          <div id="final-status-msg" class="text-xs font-semibold text-slate-500 mt-1">Dominio del tema</div>
+        </div>
+      </div>
+
+      <!-- Category Breakdown Section -->
+      <div class="max-w-2xl mx-auto mb-8 text-left bg-slate-50 dark:bg-slate-800/40 p-5 rounded-2xl border border-slate-200 dark:border-slate-700/70">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3 flex items-center justify-between">
+          <span>Desglose por Áreas Temáticas</span>
+          <span class="text-[11px] font-normal lowercase text-slate-400">(aciertos / total)</span>
+        </h4>
+        <div id="category-breakdown-list" class="space-y-2.5 text-xs sm:text-sm">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <button id="retry-failed-btn" onclick="retryFailedOnly()" class="px-6 py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-2xl text-xs sm:text-sm transition-all shadow-md shadow-rose-500/20 flex items-center gap-2 cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          Reintentar solo las falladas
+        </button>
+
+        <button onclick="restartQuiz()" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-2xl text-xs sm:text-sm transition-all shadow-md shadow-brand-500/20 flex items-center gap-2 cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Reiniciar cuestionario completo
+        </button>
+
+        <button onclick="reviewAllAnswers()" class="px-6 py-3 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold rounded-2xl text-xs sm:text-sm transition flex items-center gap-2 cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+          Ver y revisar preguntas
+        </button>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Question Map Modal (Drawer) -->
+  <div id="map-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 transition-all">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] flex flex-col">
+      
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+        <div>
+          <h3 class="font-extrabold text-lg text-slate-900 dark:text-white">Mapa de Navegación</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Salta directamente a cualquier pregunta</p>
+        </div>
+        <button onclick="toggleMapModal(false)" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-white rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Legend -->
+      <div class="flex items-center gap-3 py-3 text-[11px] font-semibold text-slate-500 border-b border-slate-100 dark:border-slate-800/80">
+        <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> Acierto</div>
+        <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span> Error</div>
+        <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-slate-200 dark:bg-slate-700 inline-block"></span> Pendiente</div>
+        <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full border-2 border-brand-500 inline-block"></span> Actual</div>
+      </div>
+
+      <!-- Grid of Buttons -->
+      <div id="modal-map-grid" class="grid grid-cols-5 sm:grid-cols-8 gap-2 py-4 overflow-y-auto custom-scrollbar flex-1">
+        <!-- Generated by JS -->
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+        <button onclick="toggleMapModal(false)" class="px-5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold transition">
+          Cerrar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="w-full border-t border-slate-200/80 dark:border-slate-800/80 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm py-4 text-center text-xs text-slate-500 dark:text-slate-400 mt-8">
+    <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p>Cuestionario de Estudio • Arquitectura de Computadoras</p>
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span> 40 Preguntas Validadas
+        </span>
+        <span>•</span>
+        <a href="https://github.com/BryanPM1999/Cuestionario-Arqui" target="_blank" rel="noopener noreferrer" class="hover:text-brand-600 dark:hover:text-brand-400 transition font-medium flex items-center gap-1">
+          <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path></svg>
+          Repositorio GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Logic -->
+  <script>
+    // 40 preguntas originales completas con sus categorías, opciones y explicaciones
+    const originalQuestions = [
+      // JERARQUÍA DE MEMORIA (1-10)
+      {
+        id: 1,
+        category: "Jerarquía de Memoria",
+        q: "¿Cuál es el principio rector fundamental de la organización de la jerarquía de memoria?",
+        options: [
+          "A mayor cercanía a la CPU, mayor velocidad, menor capacidad y mayor costo por unidad.",
+          "A mayor distancia de la CPU, mayor velocidad, mayor capacidad y menor costo por unidad.",
+          "Todos los niveles de memoria poseen el mismo tiempo de acceso y solo cambia su costo.",
+          "La memoria RAM es el nivel más veloz y costoso dentro de toda la arquitectura de la computadora."
+        ],
+        correct: 0,
+        explanation: "La jerarquía se fundamenta en que las memorias más veloces y cercanas al procesador (registros, caché) son sustancialmente más caras por bit y poseen capacidades más reducidas."
+      },
+      {
+        id: 2,
+        category: "Jerarquía de Memoria",
+        q: "¿Cuáles son las 5 características según las cuales se organizan los niveles de memoria?",
+        options: [
+          "Velocidad de acceso, capacidad, costo, proximidad al procesador y frecuencia de utilización.",
+          "Fabricante del chip, voltaje operativo, bus de direcciones, tamaño físico y peso.",
+          "Arquitectura del SO, tiempo de arranque, consumo térmico, número de pines y latencia.",
+          "Formato del socket, material semiconductor, compatibilidad BIOS, ancho de palabra y partición."
+        ],
+        correct: 0,
+        explanation: "La presentación define explícitamente: velocidad de acceso, capacidad, costo, proximidad a la CPU y frecuencia de utilización como los factores clave de organización."
+      },
+      {
+        id: 3,
+        category: "Jerarquía de Memoria",
+        q: "¿Qué componente ocupa el nivel 1 (cúspide) de la jerarquía de memoria?",
+        options: [
+          "Los registros de la CPU.",
+          "La memoria caché L1.",
+          "La memoria principal RAM.",
+          "El bus de control interno."
+        ],
+        correct: 0,
+        explanation: "Los registros residen dentro de la CPU, ofreciendo la velocidad máxima pero con una capacidad de almacenamiento sumamente reducida."
+      },
+      {
+        id: 4,
+        category: "Jerarquía de Memoria",
+        q: "¿Qué tipo de datos u operaciones retienen comúnmente los registros del procesador?",
+        options: [
+          "Datos, direcciones, instrucciones y resultados intermedios de operaciones en curso.",
+          "Sistemas operativos completos y aplicaciones instaladas sin cargar.",
+          "Copias de respaldo de archivos comprimidos y tablas de partición.",
+          "Páginas de intercambio de memoria secundaria en espera."
+        ],
+        correct: 0,
+        explanation: "Los registros albergan de forma inmediata operandos (ej. A y B para sumas), instrucciones actuales, direcciones y resultados temporales de la ALU."
+      },
+      {
+        id: 5,
+        category: "Jerarquía de Memoria",
+        q: "Si la CPU realiza la operación A + B, ¿dónde se ubican de manera inmediata los valores durante el cálculo?",
+        options: [
+          "En los registros de la CPU.",
+          "En el disco de estado sólido SSD.",
+          "En la memoria caché L3 compartida.",
+          "En el archivo de paginación del disco."
+        ],
+        correct: 0,
+        explanation: "Durante la ejecución directa de una operación aritmética o lógica, los operandos y el acumulador o registro de destino se hallan en los registros internos."
+      },
+      {
+        id: 6,
+        category: "Jerarquía de Memoria",
+        q: "¿Cuál es el orden correcto de los niveles de memoria desde el más rápido al más lento?",
+        options: [
+          "Registros → Caché (L1, L2, L3) → Memoria RAM → Almacenamiento masivo (SSD/HDD).",
+          "Almacenamiento masivo → RAM → Caché L3 → Registros de la CPU.",
+          "Caché L1 → Registros → Memoria RAM → Caché L3 → Almacenamiento SSD.",
+          "Memoria RAM → Registros → Caché (L1, L2) → Almacenamiento HDD."
+        ],
+        correct: 0,
+        explanation: "La pirámide jerárquica va desde los registros internos, pasando por las cachés L1/L2/L3, la RAM principal y finalmente el almacenamiento secundario."
+      },
+      {
+        id: 7,
+        category: "Jerarquía de Memoria",
+        q: "¿Cuál es la función primordial de la memoria RAM (Nivel 3) dentro del sistema?",
+        options: [
+          "Almacenar temporalmente los programas y datos que están siendo ejecutados por el sistema.",
+          "Almacenar el sistema operativo de forma no volátil cuando el equipo se apaga.",
+          "Interconectar exclusivamente los núcleos del procesador sin pasar por el bus del sistema.",
+          "Sustituir a los registros internos para cálculos aritméticos de punto flotante."
+        ],
+        correct: 0,
+        explanation: "Cuando un programa se ejecuta, sus instrucciones y datos activos se transfieren a la memoria RAM para que la CPU pueda operar sobre ellos."
+      },
+      {
+        id: 8,
+        category: "Jerarquía de Memoria",
+        q: "¿Qué dispositivos representan la base masiva y permanente en la jerarquía (Nivel 4)?",
+        options: [
+          "Unidades de Estado Sólido (SSD) y Discos Duros magnéticos (HDD).",
+          "Memoria Caché L3 y módulos DDR4/DDR5.",
+          "Registros de instrucción y registros de datos.",
+          "Memoria ROM y memorias intermedias de la CPU."
+        ],
+        correct: 0,
+        explanation: "El almacenamiento permanente y masivo (SSD, HDD, cintas) conforma la base de la pirámide: gran capacidad, costo accesible por GB, pero mucho más lento."
+      },
+      {
+        id: 9,
+        category: "Jerarquía de Memoria",
+        q: "¿Qué principio explica el fenómeno donde un dato utilizado recientemente tiene alta probabilidad de volver a usarse?",
+        options: [
+          "Principio de localidad temporal.",
+          "Principio de localidad espacial.",
+          "Ley de rendimiento decreciente.",
+          "Principio de consistencia estricta."
+        ],
+        correct: 0,
+        explanation: "La localidad temporal establece que si se accede a un elemento de memoria, es muy probable que el mismo elemento se consulte repetidamente en un corto período (ej. un bucle o variable contador)."
+      },
+      {
+        id: 10,
+        category: "Jerarquía de Memoria",
+        q: "¿Qué principio describe el acceso sucesivo a elementos contiguos, como al recorrer un arreglo `A[0], A[1], A[2]`?",
+        options: [
+          "Principio de localidad espacial.",
+          "Principio de localidad temporal.",
+          "Penalización por fallo forzoso.",
+          "Asociatividad de conjuntos."
+        ],
+        correct: 0,
+        explanation: "La localidad espacial señala que el acceso a una dirección de memoria incrementa la probabilidad de acceder pronto a direcciones físicas contiguas o cercanas."
+      },
+
+      // RENDIMIENTO DE MEMORIA & RELACIÓN CPU (11-17)
+      {
+        id: 11,
+        category: "Rendimiento de Memoria",
+        q: "¿Qué representa la latencia en el contexto de acceso a la memoria?",
+        options: [
+          "El retraso existente antes de que pueda comenzar o completarse el acceso a la información solicitada.",
+          "La cantidad máxima de bytes transmitidos por segundo a través del bus del sistema.",
+          "El porcentaje total de fallos ocurridos durante un segundo de ejecución de reloj.",
+          "La frecuencia en GHz a la cual operan los chips DRAM en condiciones estándar."
+        ],
+        correct: 0,
+        explanation: "La latencia es el intervalo de retraso desde que se emite la petición de lectura/escritura hasta que la memoria comienza a transferir el dato."
+      },
+      {
+        id: 12,
+        category: "Rendimiento de Memoria",
+        q: "¿Qué es un Hit (Acierto) de memoria caché?",
+        options: [
+          "La situación donde la información solicitada por la CPU se encuentra en el nivel de caché consultado.",
+          "La expulsión forzosa de un bloque antiguo para almacenar una nueva línea de memoria.",
+          "La sincronización exitosa de los datos entre el disco mecánico y la memoria RAM.",
+          "La ejecución exitosa de una instrucción en menos de un ciclo de reloj."
+        ],
+        correct: 0,
+        explanation: "Se denomina acierto o hit cuando la línea o dato requerido por el procesador se halla disponible inmediatamente en la memoria caché consultada."
+      },
+      {
+        id: 13,
+        category: "Rendimiento de Memoria",
+        q: "¿Qué consecuencia directa tiene un Miss (Fallo) en la memoria caché sobre la CPU?",
+        options: [
+          "Introduce una demora o penalización, pues el sistema debe buscar el dato en un nivel inferior más lento.",
+          "Genera una interrupción fatal que reinicia de inmediato el ciclo de la instrucción.",
+          "Obliga a la CPU a vaciar inmediatamente todos los registros generales del sistema.",
+          "Reduce de forma permanente la frecuencia de operación del reloj del procesador."
+        ],
+        correct: 0,
+        explanation: "Un fallo obliga a transferir el bloque desde la memoria principal o un nivel inferior de caché, incurriendo en un tiempo de espera denominado penalización por fallo."
+      },
+      {
+        id: 14,
+        category: "Rendimiento de Memoria",
+        q: "Si en un programa se efectúan 100 accesos a memoria, de los cuales 90 se hallan en caché y 10 no, ¿cuáles son las tasas de acierto y fallo?",
+        options: [
+          "Hit Rate = 90% (0.90) y Miss Rate = 10% (0.10).",
+          "Hit Rate = 10% (0.10) y Miss Rate = 90% (0.90).",
+          "Hit Rate = 100% (1.00) y Miss Rate = 10% (0.10).",
+          "Hit Rate = 45% (0.45) y Miss Rate = 55% (0.55)."
+        ],
+        correct: 0,
+        explanation: "Hit Rate = 90 / 100 = 90%; Miss Rate = 10 / 100 = 10% (la suma de ambas tasas es siempre 100%)."
+      },
+      {
+        id: 15,
+        category: "Rendimiento de Memoria",
+        q: "Según la fórmula: Tiempo Promedio = Tiempo de caché + (Tasa de fallos × Penalización por fallo), si el tiempo de caché es 2 ns, la tasa de fallos 10% y la penalización 50 ns, ¿cuál es el tiempo promedio?",
+        options: [
+          "7 ns",
+          "5.2 ns",
+          "12 ns",
+          "52 ns"
+        ],
+        correct: 0,
+        explanation: "Tiempo Promedio = 2 ns + (0.10 × 50 ns) = 2 ns + 5 ns = 7 ns."
+      },
+      {
+        id: 16,
+        category: "Rendimiento de Memoria",
+        q: "¿Por qué el rendimiento global de un equipo no depende únicamente de la frecuencia de reloj de la CPU?",
+        options: [
+          "Porque depende críticamente de la rapidez con la que el subsistema de memoria alimenta de instrucciones y datos a la CPU.",
+          "Porque los buses del sistema siempre duplican la velocidad de cálculo del procesador.",
+          "Porque la memoria RAM tiene prioridad de reloj por encima de la unidad aritmético-lógica.",
+          "Porque el consumo energético del disco secundario impone el número de instrucciones por ciclo."
+        ],
+        correct: 0,
+        explanation: "Si la CPU es extraordinariamente rápida pero pasa ciclos esperando datos debido a demoras de memoria (brecha de rendimiento), el desempeño global se degrada notablemente."
+      },
+      {
+        id: 17,
+        category: "Rendimiento de Memoria",
+        q: "Al comparar los niveles de caché L1, L2 y L3, ¿cuál es la relación correcta de capacidad y velocidad?",
+        options: [
+          "L1 es la más rápida pero con menor capacidad; L3 tiene mayor capacidad pero es más lenta.",
+          "L3 es la más rápida de todas y posee la menor capacidad física dentro del chip.",
+          "L1, L2 y L3 poseen idéntica velocidad y capacidad, diferenciándose solo por su fabricante.",
+          "L2 posee menor latencia que L1 y mayor capacidad que L3."
+        ],
+        correct: 0,
+        explanation: "L1 está sumamente integrada al núcleo y es ultrarrápida pero pequeña. L2 es intermedia, y L3 suele ser más grande, compartida y con una latencia algo superior."
+      },
+
+      // EVALUACIÓN DE RENDIMIENTO DE MÁQUINAS: MIPS, MFLOPS, TIEMPOS (18-28)
+      {
+        id: 18,
+        category: "Medición y Rendimiento",
+        q: "¿Qué mide específicamente la métrica MIPS en arquitectura de computadoras?",
+        options: [
+          "Millones de Instrucciones Por Segundo ejecutadas por el procesador.",
+          "Mega Instrucciones Procesadas Secuencialmente por ciclo de reloj.",
+          "Mínimo Intervalo de Procesamiento Sincronizado en memoria RAM.",
+          "Módulos Integrados de Procesamiento Simultáneo en núcleos paralelos."
+        ],
+        correct: 0,
+        explanation: "MIPS responde a las siglas de Millions of Instructions Per Second (Millones de Instrucciones Por Segundo)."
+      },
+      {
+        id: 19,
+        category: "Medición y Rendimiento",
+        q: "Si un computador ejecuta 20,000,000 de instrucciones en un tiempo total de 2 segundos, ¿cuál es su desempeño en MIPS?",
+        options: [
+          "10 MIPS",
+          "20 MIPS",
+          "40 MIPS",
+          "5 MIPS"
+        ],
+        correct: 0,
+        explanation: "MIPS = Instrucciones / (Tiempo × 10^6) = 20,000,000 / (2 × 1,000,000) = 20 / 2 = 10 MIPS."
+      },
+      {
+        id: 20,
+        category: "Medición y Rendimiento",
+        q: "¿Por qué un valor mayor de MIPS no garantiza necesariamente que un computador termine antes un programa determinado?",
+        options: [
+          "Porque distintas arquitecturas o compiladores pueden requerir diferente cantidad de instrucciones para la misma tarea.",
+          "Porque los MIPS solo se aplican a los discos mecánicos y no reflejan la CPU.",
+          "Porque el cálculo de MIPS ignora el tiempo real transcurrido en el reloj.",
+          "Porque la memoria caché anula por completo la cantidad de instrucciones ejecutadas."
+        ],
+        correct: 0,
+        explanation: "Una máquina CISC podría ejecutar menos instrucciones complejas para resolver un algoritmo, mientras que una RISC requerirá más instrucciones simples; más instrucciones por segundo no implica menor tiempo total."
+      },
+      {
+        id: 21,
+        category: "Medición y Rendimiento",
+        q: "¿Qué significan las siglas MFLOPS y para qué tipo de tareas resulta más idónea?",
+        options: [
+          "Millones de Operaciones de Punto Flotante por Segundo; útil en cargas científicas y cálculos numéricos complejos.",
+          "Mapeo Fijo de Lógica Operativa por Segundo; útil en la gestión de interrupciones del kernel.",
+          "Micro Fallos de Línea por Operación de Software; útil en la medición del desgaste del disco.",
+          "Memoria Flotante de Acceso Lógico Por Sistema; útil en la asignación de memoria RAM virtual."
+        ],
+        correct: 0,
+        explanation: "MFLOPS mide 'Million Floating-point Operations Per Second', siendo la métrica de referencia para cargas con matemática intensiva de coma flotante."
+      },
+      {
+        id: 22,
+        category: "Medición y Rendimiento",
+        q: "Un programa de modelado matemático realiza 100,000,000 de operaciones de punto flotante en 2 segundos. ¿Cuál es su resultado en MFLOPS?",
+        options: [
+          "50 MFLOPS",
+          "100 MFLOPS",
+          "200 MFLOPS",
+          "25 MFLOPS"
+        ],
+        correct: 0,
+        explanation: "MFLOPS = Operaciones Punto Flotante / (Tiempo × 10^6) = 100,000,000 / (2 × 1,000,000) = 100 / 2 = 50 MFLOPS."
+      },
+      {
+        id: 23,
+        category: "Medición y Rendimiento",
+        q: "En evaluación de desempeño, ¿qué es el 'Tiempo de Referencia'?",
+        options: [
+          "El valor utilizado como punto de comparación base para analizar el rendimiento frente a otros resultados.",
+          "El tiempo que tarda el BIOS de la placa madre en completar el POST inicial.",
+          "La latencia mínima teórica que un transistor puede soportar a 0 Kelvin.",
+          "El tiempo de garantía estipulado por el fabricante del procesador."
+        ],
+        correct: 0,
+        explanation: "El tiempo de referencia sirve como línea base (benchmark baseline) contra la cual se contrasta el comportamiento de otros sistemas o configuraciones."
+      },
+      {
+        id: 24,
+        category: "Medición y Rendimiento",
+        q: "¿Qué define a un 'Tiempo No Estimado' según la metodología de evaluación?",
+        options: [
+          "Es la medición obtenida directamente durante la ejecución real de una tarea, registrando sus condiciones.",
+          "Es un cálculo teórico deducido exclusivamente a partir de la frecuencia de reloj del fabricante.",
+          "Es el tiempo de retraso no cuantificable provocado por el calor residual del procesador.",
+          "Es un estimado probabilístico calculado por algoritmos de simulación antes de encender el equipo."
+        ],
+        correct: 0,
+        explanation: "El tiempo no estimado se basa en la observación y cronometraje empírico directo en una máquina real, evitando suposiciones abstractas."
+      },
+      {
+        id: 25,
+        category: "Medición y Rendimiento",
+        q: "¿Cuál de los siguientes es un principio fundamental para que una evaluación de rendimiento sea válida y rigurosa?",
+        options: [
+          "Condiciones reproducibles y especificación formal de la carga de trabajo (workload).",
+          "Probar el sistema únicamente sin ningún sistema operativo cargado en memoria.",
+          "Evaluar únicamente la capacidad en gigabytes del disco duro de almacenamiento masivo.",
+          "Utilizar siempre una única métrica aislada para describir por completo todo el sistema."
+        ],
+        correct: 0,
+        explanation: "Para una evaluación objetiva se exige: métrica definida, condiciones reproducibles, descripción clara de la carga de trabajo y análisis integral."
+      },
+      {
+        id: 26,
+        category: "Medición y Rendimiento",
+        q: "¿Por qué se afirma que 'una sola métrica jamás describe por completo el desempeño total'?",
+        options: [
+          "Porque el rendimiento depende de múltiples subsistemas (CPU, jerarquía de memoria, almacenamiento, E/S y software).",
+          "Porque el estándar IEEE prohíbe el uso de métricas combinadas en pruebas de laboratorio.",
+          "Porque los procesadores multinúcleo desactivan las métricas tradicionales al superar el 50% de uso.",
+          "Porque el tiempo de acceso a los registros es idéntico al tiempo del almacenamiento secundario."
+        ],
+        correct: 0,
+        explanation: "Una máquina puede destacar en MFLOPS pero sufrir cuellos de botella severos en disco o memoria RAM; el análisis de rendimiento debe ser integral."
+      },
+      {
+        id: 27,
+        category: "Medición y Rendimiento",
+        q: "¿Qué herramientas prácticas se emplean típicamente para evaluar el rendimiento de una máquina?",
+        options: [
+          "Herramientas de diagnóstico del sistema operativo y programas de benchmarking especializados.",
+          "Simuladores de transistores y microscopios de barrido electrónico de silicio.",
+          "Desensambladores estáticos de código binario sin ejecución dinámica.",
+          "Comprobadores de continuidad de pistas y multímetros de corriente continua."
+        ],
+        correct: 0,
+        explanation: "Se combinan monitores de recursos del sistema operativo (rendimiento en tiempo real) y suites estandarizadas de benchmarking."
+      },
+      {
+        id: 28,
+        category: "Medición y Rendimiento",
+        q: "¿Por qué dos computadoras con especificaciones teóricas similares pueden arrojar rendimientos muy dispares en la práctica?",
+        options: [
+          "Por diferencias en arquitectura de cachés, latencias de buses, optimización del software y cargas concurrentes.",
+          "Porque las computadoras varían la cantidad de bits por byte según el sistema operativo instalado.",
+          "Porque la memoria virtual funciona únicamente en procesadores mononúcleo.",
+          "Porque el sistema binario solo es eficiente cuando la CPU se mantiene a temperatura ambiente exacta."
+        ],
+        correct: 0,
+        explanation: "Diferencias en latencias de memoria, jerarquía de caché, controladores, temperatura (thermal throttling) y compilación cambian sustancialmente el rendimiento real."
+      },
+
+      // MEMORIA CACHÉ: FUNCIONAMIENTO Y FALLOS (29-34)
+      {
+        id: 29,
+        category: "Memoria Caché",
+        q: "¿Cuál es el rol de la memoria caché como 'puente de rendimiento'?",
+        options: [
+          "Reducir la gran brecha de velocidad existente entre la rápida CPU y la más lenta memoria RAM.",
+          "Aumentar artificialmente la capacidad de almacenamiento del disco magnético secundario.",
+          "Almacenar el firmware del sistema de entrada/salida básico (BIOS/UEFI).",
+          "Evitar que la CPU acceda a los registros internos en operaciones secuenciales."
+        ],
+        correct: 0,
+        explanation: "La caché sirve de amortiguador entre la velocidad de ciclo del procesador y los ciclos de espera mucho más largos de la memoria principal DRAM."
+      },
+      {
+        id: 30,
+        category: "Memoria Caché",
+        q: "¿Qué es un 'Fallo Forzoso' (Compulsory Miss o Cold Miss)?",
+        options: [
+          "Un fallo producido la primera vez que se solicita un dato, dado que nunca antes había ingresado a la caché.",
+          "Un fallo originado cuando dos direcciones distintas compiten exactamente por la misma línea de caché.",
+          "Un fallo causado por una sobretensión eléctrica en los transistores estáticos de la SRAM.",
+          "Un fallo generado cuando la memoria caché se desactiva desde el panel de control del sistema."
+        ],
+        correct: 0,
+        explanation: "Los fallos forzosos son inevitables al inicio: ocurren con el primer acceso a cualquier bloque de datos (estado inicial en frío)."
+      },
+      {
+        id: 31,
+        category: "Memoria Caché",
+        q: "¿En qué consiste un 'Fallo por Capacidad' (Capacity Miss)?",
+        options: [
+          "Ocurre cuando la memoria caché es de tamaño limitado y debe desalojar datos útiles para dar cabida a nuevos bloques.",
+          "Ocurre cuando el bus de datos excede la cantidad de pines disponibles en la tarjeta madre.",
+          "Ocurre cuando un bloque no cabe en una única vía fija en cachés de correspondencia directa.",
+          "Ocurre cuando la memoria RAM no tiene suficiente voltaje para responder a la petición del procesador."
+        ],
+        correct: 0,
+        explanation: "El fallo de capacidad ocurre porque el conjunto de trabajo (working set) del programa supera el tamaño total disponible en la memoria caché."
+      },
+      {
+        id: 32,
+        category: "Memoria Caché",
+        q: "¿Qué criterio sigue la política de reemplazo FIFO (First In, First Out) en una memoria caché?",
+        options: [
+          "El primer bloque que ingresó a la caché es el primero en ser desalojado al llenarse.",
+          "El bloque que menos veces ha sido consultado es el primero en eliminarse.",
+          "El bloque más recientemente utilizado es el elegido para ser expulsado inmediatamente.",
+          "Se selecciona un bloque de forma completamente aleatoria sin considerar el orden de llegada."
+        ],
+        correct: 0,
+        explanation: "FIFO desaloja la línea de memoria más antigua en la estructura, independientemente de cuántas veces haya sido accedida recientemente."
+      },
+      {
+        id: 33,
+        category: "Memoria Caché",
+        q: "Si una caché almacena [A, B, C] y al ingresar 'D' se aplica FIFO, ¿qué bloque es reemplazado y desalojado?",
+        options: [
+          "El bloque 'A'.",
+          "El bloque 'C'.",
+          "El bloque 'B'.",
+          "El bloque 'D'."
+        ],
+        correct: 0,
+        explanation: "Dado que 'A' fue el primer elemento en ingresar a la estructura, FIFO lo desaloja para otorgarle el espacio al nuevo bloque entrante 'D'."
+      },
+      {
+        id: 34,
+        category: "Memoria Caché",
+        q: "En el ejercicio práctico de la clase con 6 accesos que arrojó 5 fallos y 1 acierto, ¿cuáles fueron las tasas de fallos y aciertos?",
+        options: [
+          "Tasa de Fallos = 83.3% (5/6) y Tasa de Aciertos = 16.7% (1/6).",
+          "Tasa de Fallos = 50.0% (3/6) y Tasa de Aciertos = 50.0% (3/6).",
+          "Tasa de Fallos = 16.7% (1/6) y Tasa de Aciertos = 83.3% (5/6).",
+          "Tasa de Fallos = 100.0% (6/6) y Tasa de Aciertos = 0.0% (0/6)."
+        ],
+        correct: 0,
+        explanation: "Con 5 fallos de 6 accesos: Tasa de fallos = 5/6 = 83.33%; Tasa de aciertos = 1/6 = 16.67%."
+      },
+
+      // MEMORIA VIRTUAL Y COMPARATIVAS (35-40)
+      {
+        id: 35,
+        category: "Memoria Virtual",
+        q: "¿Cuál es el objetivo principal de la Memoria Virtual en un sistema de cómputo?",
+        options: [
+          "Servir de apoyo al agotarse la memoria RAM física, utilizando espacio del almacenamiento secundario en disco.",
+          "Aumentar la frecuencia de oscilación del reloj interno del procesador central.",
+          "Proveer un espacio ultrarrápido ubicado dentro del mismo silicio de los núcleos de la CPU.",
+          "Eliminar la necesidad de utilizar memoria caché en los niveles L1 y L2."
+        ],
+        correct: 0,
+        explanation: "La memoria virtual permite ejecutar programas que demandan más memoria que la RAM física instalada, empleando áreas de intercambio (swap/paging) en disco."
+      },
+      {
+        id: 36,
+        category: "Memoria Virtual",
+        q: "¿En qué dispositivo de almacenamiento se ubica físicamente la memoria virtual?",
+        options: [
+          "En el disco secundario (SSD / HDD).",
+          "En los registros de propósito general de la CPU.",
+          "En el encapsulado de silicio de la memoria SRAM.",
+          "En el bus de direcciones principal de la placa base."
+        ],
+        correct: 0,
+        explanation: "La extensión de la memoria virtual reside físicamente en archivos de paginación o particiones de intercambio sobre el almacenamiento secundario."
+      },
+      {
+        id: 37,
+        category: "Memoria Caché vs Virtual",
+        q: "¿Cuál es la principal diferencia funcional entre la Memoria Caché y la Memoria Virtual?",
+        options: [
+          "La caché busca acelerar el acceso a datos frecuentes; la virtual amplía la capacidad de memoria apoyándose en el disco.",
+          "La caché es no volátil y almacena datos permanentes; la virtual es volátil y reside dentro de la CPU.",
+          "La caché utiliza discos mecánicos; la memoria virtual emplea exclusivamente transistores estáticos SRAM.",
+          "La caché se gestiona mediante el teclado; la memoria virtual se controla mediante el bus PCI Express."
+        ],
+        correct: 0,
+        explanation: "La caché optimiza la velocidad (latencia/rendimiento), mientras que la memoria virtual solventa limitaciones de espacio (capacidad)."
+      },
+      {
+        id: 38,
+        category: "Memoria Caché vs Virtual",
+        q: "En términos de velocidad de acceso, ¿cómo se compara la memoria caché frente a la memoria virtual?",
+        options: [
+          "La memoria caché es extremadamente rápida; la memoria virtual es considerablemente más lenta.",
+          "La memoria virtual es sustancialmente más rápida al estar alojada directamente en el disco secundario.",
+          "Ambas memorias tienen exactamente los mismos nanosegundos de latencia por instrucción.",
+          "La memoria caché es más lenta porque requiere consultar las tablas de páginas del sistema operativo."
+        ],
+        correct: 0,
+        explanation: "La caché opera en nanosegundos (SRAM), mientras que la memoria virtual involucra accesos a disco que operan en microsegundos o milisegundos."
+      },
+      {
+        id: 39,
+        category: "Memoria Caché vs Virtual",
+        q: "¿Qué componente o aliado asiste directamente la memoria caché dentro del computador?",
+        options: [
+          "Al procesador central (CPU), situándose en estrecha proximidad con él.",
+          "A la fuente de poder, reduciendo el consumo eléctrico durante picos de voltaje.",
+          "A la tarjeta de red, almacenando paquetes entrantes de la interfaz Ethernet.",
+          "Al lector óptico de discos, acelerando la lectura de sectores físicos."
+        ],
+        correct: 0,
+        explanation: "La caché es el socio de alta velocidad directo de la CPU para evitar detenciones por acceso a memoria."
+      },
+      {
+        id: 40,
+        category: "Conceptos Globales",
+        q: "En el flujo de ejecución: si la CPU busca un dato, ¿cuál es la ruta habitual de consulta en caso de un fallo (Miss)?",
+        options: [
+          "CPU consulta Caché → No lo encuentra (Miss) → Busca en Memoria RAM o Almacenamiento.",
+          "CPU consulta Almacenamiento → No lo encuentra → Consulta la Caché L1 → Escribe en Registros.",
+          "CPU consulta Disco Duro → Pasa a Memoria Virtual → Escribe en Caché L2 → Envía a RAM.",
+          "CPU escribe en RAM → Si falla, busca en Registros → Descarta la instrucción."
+        ],
+        correct: 0,
+        explanation: "El procesador busca primero en el nivel más cercano y veloz (Caché). Ante un Miss, se propaga la petición a la memoria RAM o al disco si está paginado."
+      }
+    ];
+
+    // State Variables
+    let currentQuestions = [...originalQuestions];
+    let currentQ = 0;
+    let userAnswers = {}; // Map of question id -> selectedOptionIndex (in current rendered order)
+    let shuffledOptionsMap = {}; // Map of question id -> { options: [], correctIndex: number }
+    let shuffleOptionsEnabled = true;
+    let soundEnabled = true;
+    let selectedCategory = "ALL";
+
+    // Audio Synthesizer using Web Audio API (Zero dependencies)
+    let audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) audioCtx = new AudioContextClass();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playSound(type) {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+
+        if (type === 'correct') {
+          // Cheerful chime (two ascending frequencies)
+          const osc1 = ctx.createOscillator();
+          const osc2 = ctx.createOscillator();
+          const gain = ctx.createGain();
+
+          osc1.type = 'sine';
+          osc2.type = 'triangle';
+
+          osc1.frequency.setValueAtTime(523.25, now); // C5
+          osc1.frequency.exponentialRampToValueAtTime(783.99, now + 0.15); // G5
+
+          osc2.frequency.setValueAtTime(659.25, now); // E5
+          osc2.frequency.exponentialRampToValueAtTime(1046.50, now + 0.2); // C6
+
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc1.start(now);
+          osc2.start(now);
+          osc1.stop(now + 0.35);
+          osc2.stop(now + 0.35);
+        } else if (type === 'incorrect') {
+          // Low gentle thud
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.exponentialRampToValueAtTime(130, now + 0.25);
+
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start(now);
+          osc.stop(now + 0.28);
+        } else if (type === 'complete') {
+          // Fanfare
+          [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            const start = now + (idx * 0.1);
+            osc.frequency.setValueAtTime(freq, start);
+            gain.gain.setValueAtTime(0.12, start);
+            gain.gain.exponentialRampToValueAtTime(0.001, start + 0.3);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(start);
+            osc.stop(start + 0.3);
+          });
+        }
+      } catch (e) {
+        // Audio might be blocked until user gesture, ignore silently
+      }
+    }
+
+    // Shuffle Array Helper (Fisher-Yates)
+    function shuffleArray(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // Prepare Question Display Options
+    function getPreparedQuestion(qData) {
+      if (!shuffleOptionsEnabled) {
+        return {
+          ...qData,
+          displayOptions: qData.options,
+          displayCorrect: qData.correct
+        };
+      }
+
+      if (!shuffledOptionsMap[qData.id]) {
+        // Create indexed option pairs
+        const pairs = qData.options.map((opt, originalIndex) => ({
+          text: opt,
+          isCorrect: originalIndex === qData.correct
+        }));
+        
+        const shuffledPairs = shuffleArray(pairs);
+        const displayCorrect = shuffledPairs.findIndex(p => p.isCorrect);
+        
+        shuffledOptionsMap[qData.id] = {
+          displayOptions: shuffledPairs.map(p => p.text),
+          displayCorrect: displayCorrect
+        };
+      }
+
+      return {
+        ...qData,
+        displayOptions: shuffledOptionsMap[qData.id].displayOptions,
+        displayCorrect: shuffledOptionsMap[qData.id].displayCorrect
+      };
+    }
+
+    // Toggle Theme
+    function initTheme() {
+      const savedTheme = localStorage.getItem('arqui_theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+        document.getElementById('moon-icon').classList.add('hidden');
+        document.getElementById('sun-icon').classList.remove('hidden');
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.getElementById('moon-icon').classList.remove('hidden');
+        document.getElementById('sun-icon').classList.add('hidden');
+      }
+    }
+
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('arqui_theme', isDark ? 'dark' : 'light');
+      document.getElementById('moon-icon').classList.toggle('hidden', isDark);
+      document.getElementById('sun-icon').classList.toggle('hidden', !isDark);
+    }
+
+    // Toggle Sound
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('sound-icon-on').classList.toggle('hidden', !soundEnabled);
+      document.getElementById('sound-icon-off').classList.toggle('hidden', soundEnabled);
+      if (soundEnabled) playSound('correct');
+    }
+
+    // Toggle Option Shuffle
+    function toggleOptionShuffle() {
+      shuffleOptionsEnabled = !shuffleOptionsEnabled;
+      shuffledOptionsMap = {}; // Reset map
+      document.getElementById('shuffle-status-text').textContent = shuffleOptionsEnabled ? "Opciones: Aleatorias" : "Opciones: En Orden";
+      renderQuestion();
+    }
+
+    // Filter by category
+    function filterByCategory(category) {
+      selectedCategory = category;
+      const badge = document.getElementById("active-filter-badge");
+
+      if (category === "ALL") {
+        currentQuestions = [...originalQuestions];
+        badge.classList.add("hidden");
+      } else {
+        currentQuestions = originalQuestions.filter(q => q.category === category);
+        badge.classList.remove("hidden");
+        badge.textContent = `Tema: ${category}`;
+      }
+
+      currentQ = 0;
+      document.getElementById("results-card").classList.add("hidden");
+      document.getElementById("quiz-container").classList.remove("hidden");
+      renderQuestion();
+    }
+
+    // Render Question
+    function renderQuestion() {
+      if (currentQuestions.length === 0) return;
+      if (currentQ >= currentQuestions.length) currentQ = 0;
+
+      const rawQ = currentQuestions[currentQ];
+      const q = getPreparedQuestion(rawQ);
+      const isAnswered = userAnswers[q.id] !== undefined;
+
+      // Update Header & Badge Stats
+      document.getElementById("category-badge").textContent = q.category;
+      document.getElementById("question-index").textContent = `#${currentQ + 1} / ${currentQuestions.length}`;
+      document.getElementById("progress-text").textContent = `Pregunta ${currentQ + 1} de ${currentQuestions.length}`;
+      document.getElementById("question-text").textContent = `${rawQ.id}. ${q.q}`;
+      
+      const percent = ((currentQ + 1) / currentQuestions.length) * 100;
+      document.getElementById("progress-bar").style.width = `${percent}%`;
+
+      // Status pill
+      const statusPill = document.getElementById("status-pill");
+      if (!isAnswered) {
+        statusPill.textContent = "Pendiente";
+        statusPill.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400";
+      } else {
+        const isCorrect = userAnswers[q.id] === q.displayCorrect;
+        if (isCorrect) {
+          statusPill.textContent = "✓ Correcto";
+          statusPill.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300";
+        } else {
+          statusPill.textContent = "✕ Incorrecto";
+          statusPill.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300";
+        }
+      }
+
+      // Render Options
+      const grid = document.getElementById("options-grid");
+      grid.innerHTML = "";
+
+      q.displayOptions.forEach((optText, optIdx) => {
+        const btn = document.createElement("button");
+        const letter = String.fromCharCode(65 + optIdx); // A, B, C, D
+        
+        btn.setAttribute("role", "radio");
+        btn.setAttribute("aria-checked", isAnswered && userAnswers[q.id] === optIdx ? "true" : "false");
+        btn.id = `option-${optIdx}`;
+
+        let baseClasses = "w-full text-left p-4 sm:p-4.5 rounded-2xl border text-sm sm:text-base font-medium flex items-start gap-3.5 transition-all duration-200 outline-none ";
+
+        if (!isAnswered) {
+          baseClasses += "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:border-brand-400 dark:hover:border-brand-500 hover:bg-brand-50/40 dark:hover:bg-slate-800 hover:shadow-sm text-slate-700 dark:text-slate-200 cursor-pointer active:scale-[0.99]";
+          btn.onclick = () => selectOption(optIdx);
+        } else {
+          btn.disabled = true;
+          if (optIdx === q.displayCorrect) {
+            // Correct Answer Styling
+            baseClasses += "border-emerald-500 dark:border-emerald-600 bg-emerald-50/90 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 font-semibold ring-2 ring-emerald-500/20";
+          } else if (optIdx === userAnswers[q.id]) {
+            // Wrong Pick Styling
+            baseClasses += "border-rose-400 dark:border-rose-600 bg-rose-50/90 dark:bg-rose-950/40 text-rose-900 dark:text-rose-200 ring-2 ring-rose-500/20";
+          } else {
+            // Dimmed options
+            baseClasses += "border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40 text-slate-400 dark:text-slate-500 opacity-60";
+          }
+        }
+
+        btn.className = baseClasses;
+
+        // Custom Letter Badge inside button
+        let badgeClass = "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300";
+        if (isAnswered) {
+          if (optIdx === q.displayCorrect) badgeClass = "bg-emerald-600 text-white";
+          else if (optIdx === userAnswers[q.id]) badgeClass = "bg-rose-600 text-white";
+        }
+
+        btn.innerHTML = `
+          <span class="inline-flex items-center justify-center w-7 h-7 rounded-xl ${badgeClass} text-xs font-extrabold flex-shrink-0 transition-colors">
+            ${letter}
+          </span>
+          <span class="pt-0.5 leading-relaxed flex-1">${escapeHtml(optText)}</span>
+          ${isAnswered && optIdx === q.displayCorrect ? `
+            <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0 self-center" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+            </svg>` : ''}
+          ${isAnswered && optIdx === userAnswers[q.id] && optIdx !== q.displayCorrect ? `
+            <svg class="w-5 h-5 text-rose-600 dark:text-rose-400 flex-shrink-0 self-center" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+            </svg>` : ''}
+        `;
+        grid.appendChild(btn);
+      });
+
+      // Feedback Explanation Box
+      const feedbackBox = document.getElementById("feedback-box");
+      const feedbackIcon = document.getElementById("feedback-icon");
+      const feedbackTitle = document.getElementById("feedback-title");
+      const feedbackMsg = document.getElementById("feedback-msg");
+
+      if (isAnswered) {
+        feedbackBox.classList.remove("hidden");
+        const isCorrect = userAnswers[q.id] === q.displayCorrect;
+
+        if (isCorrect) {
+          feedbackBox.className = "p-5 rounded-2xl mb-6 text-sm border border-emerald-300 dark:border-emerald-800 bg-emerald-50/90 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 animate-fadeIn";
+          feedbackIcon.className = "w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-base mt-0.5 shadow-sm bg-emerald-600 text-white";
+          feedbackIcon.textContent = "✓";
+          feedbackTitle.textContent = "¡Respuesta Correcta!";
+        } else {
+          feedbackBox.className = "p-5 rounded-2xl mb-6 text-sm border border-rose-300 dark:border-rose-800 bg-rose-50/90 dark:bg-rose-950/40 text-rose-900 dark:text-rose-200 animate-fadeIn";
+          feedbackIcon.className = "w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-base mt-0.5 shadow-sm bg-rose-600 text-white";
+          feedbackIcon.textContent = "✕";
+          feedbackTitle.textContent = "Respuesta Incorrecta";
+        }
+
+        feedbackMsg.textContent = q.explanation;
+      } else {
+        feedbackBox.classList.add("hidden");
+      }
+
+      // Prev & Next Buttons
+      const prevBtn = document.getElementById("prev-btn");
+      prevBtn.disabled = currentQ === 0;
+
+      const nextBtn = document.getElementById("next-btn");
+      if (currentQ === currentQuestions.length - 1) {
+        nextBtn.innerHTML = `<span>Ver Resultados</span><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+      } else {
+        nextBtn.innerHTML = `<span>Siguiente</span><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>`;
+      }
+
+      updateLiveScore();
+      saveProgress();
+    }
+
+    function selectOption(index) {
+      const q = getPreparedQuestion(currentQuestions[currentQ]);
+      userAnswers[q.id] = index;
+
+      if (index === q.displayCorrect) {
+        playSound('correct');
+      } else {
+        playSound('incorrect');
+      }
+
+      renderQuestion();
+    }
+
+    function clearCurrentAnswer() {
+      const q = currentQuestions[currentQ];
+      delete userAnswers[q.id];
+      renderQuestion();
+    }
+
+    function nextQuestion() {
+      if (currentQ < currentQuestions.length - 1) {
+        currentQ++;
+        renderQuestion();
+      } else {
+        showFinalResults();
+      }
+    }
+
+    function prevQuestion() {
+      if (currentQ > 0) {
+        currentQ--;
+        renderQuestion();
+      }
+    }
+
+    function updateLiveScore() {
+      let correct = 0;
+      let answered = 0;
+
+      currentQuestions.forEach(rawQ => {
+        if (userAnswers[rawQ.id] !== undefined) {
+          answered++;
+          const q = getPreparedQuestion(rawQ);
+          if (userAnswers[rawQ.id] === q.displayCorrect) {
+            correct++;
+          }
+        }
+      });
+
+      const total = currentQuestions.length;
+      document.getElementById("score-live").textContent = `Puntaje: ${correct} de ${answered} respondidas`;
+      
+      const accuracy = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+      document.getElementById("accuracy-live").textContent = `(${accuracy}% acierto)`;
+    }
+
+    // Modal Question Map
+    function toggleMapModal(show) {
+      const modal = document.getElementById("map-modal");
+      if (show) {
+        renderModalMapGrid();
+        modal.classList.remove("hidden");
+      } else {
+        modal.classList.add("hidden");
+      }
+    }
+
+    function renderModalMapGrid() {
+      const grid = document.getElementById("modal-map-grid");
+      grid.innerHTML = "";
+
+      currentQuestions.forEach((rawQ, idx) => {
+        const btn = document.createElement("button");
+        const q = getPreparedQuestion(rawQ);
+        const ans = userAnswers[rawQ.id];
+        
+        let statusStyle = "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700";
+        if (ans !== undefined) {
+          if (ans === q.displayCorrect) {
+            statusStyle = "bg-emerald-500 text-white font-bold";
+          } else {
+            statusStyle = "bg-rose-500 text-white font-bold";
+          }
+        }
+
+        if (idx === currentQ) {
+          statusStyle += " ring-2 ring-brand-500 ring-offset-2 dark:ring-offset-slate-900";
+        }
+
+        btn.className = `p-2.5 rounded-xl text-xs font-semibold flex items-center justify-center transition cursor-pointer ${statusStyle}`;
+        btn.textContent = rawQ.id;
+        btn.title = `Pregunta #${rawQ.id}: ${rawQ.q.substring(0, 45)}...`;
+
+        btn.onclick = () => {
+          currentQ = idx;
+          toggleMapModal(false);
+          renderQuestion();
+        };
+
+        grid.appendChild(btn);
+      });
+    }
+
+    // Results & Completion
+    function showFinalResults() {
+      document.getElementById("quiz-container").classList.add("hidden");
+      document.getElementById("results-card").classList.remove("hidden");
+
+      let correctCount = 0;
+      let totalQuestions = currentQuestions.length;
+      let errorsCount = 0;
+
+      // Category breakdown counters
+      const categoryStats = {};
+
+      currentQuestions.forEach(rawQ => {
+        const q = getPreparedQuestion(rawQ);
+        if (!categoryStats[rawQ.category]) {
+          categoryStats[rawQ.category] = { total: 0, correct: 0 };
+        }
+        categoryStats[rawQ.category].total++;
+
+        if (userAnswers[rawQ.id] !== undefined && userAnswers[rawQ.id] === q.displayCorrect) {
+          correctCount++;
+          categoryStats[rawQ.category].correct++;
+        } else {
+          errorsCount++;
+        }
+      });
+
+      const percent = Math.round((correctCount / totalQuestions) * 100);
+      document.getElementById("final-score").textContent = `${correctCount} / ${totalQuestions}`;
+      document.getElementById("final-percent").textContent = `${percent}% de aciertos`;
+      document.getElementById("final-errors").textContent = `${errorsCount}`;
+
+      // Status Assessment
+      const statusEl = document.getElementById("final-status");
+      const statusMsgEl = document.getElementById("final-status-msg");
+      const iconContainer = document.getElementById("results-icon-container");
+
+      if (percent >= 90) {
+        statusEl.textContent = "Excelente";
+        statusEl.className = "text-2xl font-extrabold text-emerald-500";
+        statusMsgEl.textContent = "¡Dominio total del temario!";
+        iconContainer.textContent = "🏆";
+        triggerConfetti();
+        playSound('complete');
+      } else if (percent >= 70) {
+        statusEl.textContent = "Aprobado";
+        statusEl.className = "text-2xl font-extrabold text-blue-500";
+        statusMsgEl.textContent = "Buen nivel, afianza algunos puntos.";
+        iconContainer.textContent = "⭐";
+        playSound('complete');
+      } else {
+        statusEl.textContent = "Refuerzo Requerido";
+        statusEl.className = "text-2xl font-extrabold text-amber-500";
+        statusMsgEl.textContent = "Revisa los conceptos con fallos.";
+        iconContainer.textContent = "📚";
+      }
+
+      // Populate Category Breakdown
+      const breakdownList = document.getElementById("category-breakdown-list");
+      breakdownList.innerHTML = "";
+
+      Object.entries(categoryStats).forEach(([catName, stat]) => {
+        const catPercent = Math.round((stat.correct / stat.total) * 100);
+        const item = document.createElement("div");
+        item.className = "flex items-center justify-between gap-3 p-2 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60";
+        item.innerHTML = `
+          <div class="flex-1">
+            <div class="flex justify-between items-center mb-1">
+              <span class="font-semibold text-slate-800 dark:text-slate-200">${catName}</span>
+              <span class="font-bold text-slate-600 dark:text-slate-300">${stat.correct}/${stat.total} (${catPercent}%)</span>
+            </div>
+            <div class="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+              <div class="bg-brand-500 h-full rounded-full" style="width: ${catPercent}%"></div>
+            </div>
+          </div>
+        `;
+        breakdownList.appendChild(item);
+      });
+
+      // Enable/Disable retry failed button
+      document.getElementById("retry-failed-btn").style.display = errorsCount > 0 ? "inline-flex" : "none";
+    }
+
+    function retryFailedOnly() {
+      const failed = currentQuestions.filter(rawQ => {
+        const q = getPreparedQuestion(rawQ);
+        return userAnswers[rawQ.id] === undefined || userAnswers[rawQ.id] !== q.displayCorrect;
+      });
+
+      if (failed.length === 0) return;
+
+      currentQuestions = failed;
+      currentQ = 0;
+      failed.forEach(q => delete userAnswers[q.id]);
+
+      document.getElementById("results-card").classList.add("hidden");
+      document.getElementById("quiz-container").classList.remove("hidden");
+      document.getElementById("active-filter-badge").classList.remove("hidden");
+      document.getElementById("active-filter-badge").textContent = `Modo Repaso (${failed.length} falladas)`;
+
+      renderQuestion();
+    }
+
+    function reviewAllAnswers() {
+      document.getElementById("results-card").classList.add("hidden");
+      document.getElementById("quiz-container").classList.remove("hidden");
+      currentQ = 0;
+      renderQuestion();
+    }
+
+    function restartQuiz() {
+      userAnswers = {};
+      shuffledOptionsMap = {};
+      currentQuestions = [...originalQuestions];
+      selectedCategory = "ALL";
+      document.getElementById("category-filter").value = "ALL";
+      document.getElementById("active-filter-badge").classList.add("hidden");
+      currentQ = 0;
+      document.getElementById("results-card").classList.add("hidden");
+      document.getElementById("quiz-container").classList.remove("hidden");
+      localStorage.removeItem("arqui_quiz_answers");
+      renderQuestion();
+    }
+
+    function triggerConfetti() {
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      }
+    }
+
+    // Safe HTML Escape
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Local Storage Progress Persistence
+    function saveProgress() {
+      try {
+        localStorage.setItem("arqui_quiz_answers", JSON.stringify(userAnswers));
+      } catch(e) {}
+    }
+
+    function loadProgress() {
+      try {
+        const saved = localStorage.getItem("arqui_quiz_answers");
+        if (saved) {
+          userAnswers = JSON.parse(saved);
+        }
+      } catch(e) {}
+    }
+
+    // Keyboard Shortcuts Navigation
+    window.addEventListener("keydown", (e) => {
+      // Don't trigger if user is interacting with select
+      if (e.target.tagName === 'SELECT') return;
+
+      const key = e.key.toUpperCase();
+
+      // Number keys 1-4 or letters A-D to pick option
+      const keyMap = { '1': 0, '2': 1, '3': 2, '4': 3, 'A': 0, 'B': 1, 'C': 2, 'D': 3 };
+      if (key in keyMap) {
+        const optIdx = keyMap[key];
+        const q = getPreparedQuestion(currentQuestions[currentQ]);
+        if (userAnswers[q.id] === undefined && optIdx < q.displayOptions.length) {
+          selectOption(optIdx);
+        }
+      }
+
+      // Arrows for Next/Prev
+      if (e.key === "ArrowRight") {
+        nextQuestion();
+      } else if (e.key === "ArrowLeft") {
+        prevQuestion();
+      } else if (e.key === "m" || e.key === "M") {
+        const isHidden = document.getElementById("map-modal").classList.contains("hidden");
+        toggleMapModal(isHidden);
+      } else if (e.key === "Escape") {
+        toggleMapModal(false);
+      }
+    });
+
+    // Initialize App
+    initTheme();
+    loadProgress();
+    renderQuestion();
+  </script>
+</body>
+</html>
